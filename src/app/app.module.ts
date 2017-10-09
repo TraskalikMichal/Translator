@@ -14,6 +14,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 // providers
 import { TranslationData } from '../providers/translation-data';
 import { HttpModule } from '@angular/http';
+import { DataProvider } from '../providers/data/data';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { HttpModule } from '@angular/http';
     StatusBar,
     SplashScreen,
     TranslationData,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    DataProvider
   ]
 })
 export class AppModule {}

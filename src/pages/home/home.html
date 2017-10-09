@@ -13,6 +13,20 @@
         <ion-input #tText type="text" value=""></ion-input>
       </ion-item>
 
+      <ion-item>
+        <ion-label>From</ion-label>
+        <ion-select [(ngModel)]="langFrom">
+          <ion-option *ngFor="let lang of languages" [value]="lang">{{lang | uppercase}}</ion-option>          
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>To</ion-label>
+        <ion-select [(ngModel)]="langTo">
+          <ion-option *ngFor="let langTo of languages" [value]="langTo">{{langTo | uppercase}}</ion-option>          
+        </ion-select>
+      </ion-item>
+
     </ion-list>
 
     <button (click)="translateClick(tText.value)" ion-button full>Translate</button>
