@@ -14,12 +14,12 @@ export class HomePage {
   private textForTranslation:string = '';
   private cardContent:string = '';
 
-  public languages = ['cs','es','fr','de','it','en'];
+  public languages = ['cs','en','es','fr','de','it'];
 
   private langFrom: string;
   private langTo: string;
 
-  private str: string='';
+  public history= new Array<{from: string, to: string, fromText: string, toText: string}>();
 
   constructor(public navCtrl: NavController, private translation: TranslationData,public data:DataProvider) {
 
@@ -33,18 +33,19 @@ export class HomePage {
     this.textForTranslation = tText;
 
     console.log(this.textForTranslation + ' ' + this.langFrom + ' ' + this.langTo);
-
-    this.str = this.str.concat(this.textForTranslation);
-    console.log(this.str);
-
-    this.data.paramData = this.str;
     
+        
     // pass text for translation to translation service
-    this.translation.getTranslation(this.textForTranslation, this.langFrom, this.langTo).subscribe( (result) => {
+    this.translation.getTranslation(this.textForTranslation, this.langFrom, this.langTo).subscribe( (result) => {    
       this.cardContent = result.responseData.translatedText;
+      let transl = {from: '', to: '', fromText: '', toText: ''};
+      transl.toText = this.cardContent;
+      transl.from = this.langFrom;
+      transl.to = this.langTo;
+      transl.fromText = this.textForTranslation;      
+      this.history.push(transl);
+      console.log(this.history)
     });
-
-
 
     
   }

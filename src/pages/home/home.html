@@ -41,5 +41,21 @@
            {{ cardContent }}
         </ion-card-content>
       
-      </ion-card>
+    </ion-card>
+
+    <ion-card>
+      
+        <ion-card-header>
+          History
+        </ion-card-header>
+      
+        <ion-card-content>
+          <div *ngFor="let item of history">
+           <p><span>{{item.fromText}}<sub>{{item.from}}</sub> </span>→ <span></span><span>{{item.toText}}<sub>{{item.to}}</sub></span></p>
+          </div>
+        </ion-card-content>
+      
+    </ion-card>
+
+
 </ion-content>
