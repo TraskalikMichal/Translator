@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { TranslationData } from '../../providers/translation-data';
-import { DataProvider } from "../../providers/data/data";
+import { SpeechRecognition } from '@ionic-native/speech-recognition';
+import { NgZone } from '@angular/core';
+import { Storage } from '@ionic/storage';
+import { TextToSpeech } from '@ionic-native/text-to-speech';
 
-import { NavParams } from 'ionic-angular'
+import { TranslationHistoryProvider } from '../../providers/translation-history/translation-history';
 
 @Component({
   selector: 'page-home',
@@ -21,8 +24,25 @@ export class HomePage {
 
   public history= new Array<{from: string, to: string, fromText: string, toText: string}>();
 
-  constructor(public navCtrl: NavController, private translation: TranslationData,public data:DataProvider) {
+  private speechToTextEnable: boolean = false;
 
+  public speech: boolean;
+  public isToggled: boolean;
+
+  constructor(public navCtrl: NavController, private translation: TranslationData, private speechRecognition: SpeechRecognition, private translationHistory: TranslationHistoryProvider, private zone: NgZone, private storage: Storage, private tts: TextToSpeech) {
+    this.speechRecognition.isRecognitionAvailable().then(
+      (availability: boolean) => {
+        this.speechToTextEnable = availability;
+      }
+    );
+    
+    storage.get('speech').then((value) => {
+      this.speech = value;
+    });
+  }
+
+  public saveOptionSpeech() {
+    this.storage.set('speech', this.isToggled);
   }
 
   /**
@@ -33,8 +53,7 @@ export class HomePage {
     this.textForTranslation = tText;
 
     console.log(this.textForTranslation + ' ' + this.langFrom + ' ' + this.langTo);
-    
-        
+            
     // pass text for translation to translation service
     this.translation.getTranslation(this.textForTranslation, this.langFrom, this.langTo).subscribe( (result) => {    
       this.cardContent = result.responseData.translatedText;
@@ -44,10 +63,53 @@ export class HomePage {
       transl.to = this.langTo;
       transl.fromText = this.textForTranslation;      
       this.history.push(transl);
-      console.log(this.history)
-    });
+      this.translationHistory.pushToHistory(this.textForTranslation, this.cardContent, this.langFrom, this.langTo);
+      this.storage.set('history',this.translationHistory.getHistoryData());
+      if(this.isToggled)
+      {
+        this.tts.speak(this.cardContent)
+        .then(() => console.log('Success'))
+        .catch((reason: any) => console.log(reason));
+      }
+    });    
+  }
 
-    
+  private recogniseSpeech() {
+    let options = {
+      language: this.langFrom
+    };
+
+    this.speechRecognition.startListening(options).subscribe(
+      (matches: Array<string>) => {
+        let text = matches.join(' ');
+        
+        this.zone.run(() => {
+        this.translateClick(text);
+        });
+      }
+    );
+  }
+
+  speechToText() {
+    if(this.speechToTextEnable){
+      this.speechRecognition.hasPermission().then(
+        (hasPermission: boolean) => {
+          if(hasPermission) {
+            this.recogniseSpeech();
+          } else {
+            this.speechRecognition.requestPermission().then(
+              () => {
+                console.log("Permission granted!");
+                this.recogniseSpeech();
+            },
+              () => {
+                console.log("Permission denied!");
+            });
+          }
+      });
+    } else {
+      console.log("Speech to text is not available!")
+    }
   }
 
 }

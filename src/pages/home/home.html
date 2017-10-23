@@ -1,16 +1,19 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>Translator</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Translator</h2>
+  
   <ion-list>
     
       <ion-item>
         <ion-label fixed>Your text</ion-label>
         <ion-input #tText type="text" value=""></ion-input>
+        <button (click)="speechToText()" ion-button item-right clear>
+          <ion-icon name="mic"></ion-icon>
+        </button>
       </ion-item>
 
       <ion-item>
@@ -25,6 +28,11 @@
         <ion-select [(ngModel)]="langTo">
           <ion-option *ngFor="let langTo of languages" [value]="langTo">{{langTo | uppercase}}</ion-option>          
         </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Speech after translate</ion-label>
+        <ion-toggle checked="{{speech}}" [(ngModel)]="isToggled" (ionChange)="saveOptionSpeech()"></ion-toggle>
       </ion-item>
 
     </ion-list>
@@ -42,20 +50,5 @@
         </ion-card-content>
       
     </ion-card>
-
-    <ion-card>
-      
-        <ion-card-header>
-          History
-        </ion-card-header>
-      
-        <ion-card-content>
-          <div *ngFor="let item of history">
-           <p><span>{{item.fromText}}<sub>{{item.from}}</sub> </span>→ <span></span><span>{{item.toText}}<sub>{{item.to}}</sub></span></p>
-          </div>
-        </ion-card-content>
-      
-    </ion-card>
-
 
 </ion-content>

@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { OnChanges } from '@angular/core';
+import { Storage } from '@ionic/storage';
+import { TextToSpeech } from '@ionic-native/text-to-speech';
 
-import { DataProvider } from "../../providers/data/data";
+import { Translation } from '../../model/translation'
+import { TranslationHistoryProvider } from '../../providers/translation-history/translation-history';
 
 @Component({
   selector: 'page-about',
@@ -10,12 +12,29 @@ import { DataProvider } from "../../providers/data/data";
 })
 export class AboutPage{
 
-  private dataToShow: string;
+  private historyArray: Array<Translation>;
 
-  constructor(public navCtrl: NavController, public data:DataProvider) {
+  constructor(public navCtrl: NavController, private translationHistory: TranslationHistoryProvider, private storage: Storage, private tts: TextToSpeech) {
     
   }
 
-  
+  ionViewWillEnter() {
+    this.historyArray = this.translationHistory.getHistoryData(); 
+  }
+
+  delete(his: Translation) {
+    let index = this.historyArray.indexOf(his)
+    if(index !== -1)
+    {
+      this.historyArray.splice(index, 1);
+    }
+    this.storage.set('history', this.historyArray);
+  }
+
+  textToSpeech(his: string) {
+    this.tts.speak(his)
+    .then(() => console.log('Success'))
+    .catch((reason: any) => console.log(reason));
+  }  
 
 }

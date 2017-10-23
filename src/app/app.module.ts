@@ -2,6 +2,7 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
+import { IonicStorageModule } from '@ionic/storage';
 
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
@@ -14,7 +15,11 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 // providers
 import { TranslationData } from '../providers/translation-data';
 import { HttpModule } from '@angular/http';
-import { DataProvider } from '../providers/data/data';
+
+//speech recognition library
+import { SpeechRecognition } from '@ionic-native/speech-recognition';
+import { TranslationHistoryProvider } from '../providers/translation-history/translation-history';
+import { TextToSpeech } from '@ionic-native/text-to-speech';
 
 @NgModule({
   declarations: [
@@ -27,7 +32,8 @@ import { DataProvider } from '../providers/data/data';
   imports: [
     BrowserModule,
     HttpModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -42,7 +48,9 @@ import { DataProvider } from '../providers/data/data';
     SplashScreen,
     TranslationData,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    DataProvider
+    SpeechRecognition,
+    TranslationHistoryProvider,
+    TextToSpeech
   ]
 })
 export class AppModule {}

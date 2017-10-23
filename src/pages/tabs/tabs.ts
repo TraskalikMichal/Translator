@@ -14,14 +14,12 @@ export class TabsPage {
 
   tab1Root = HomePage;
   tab2Root = AboutPage;
-  tab3Root = ContactPage;
 
   params: NavParams;
   fooId: any;
 
   constructor(params: NavParams) {
-    this.params = params;
-    console.log(this.params); // returns NavParams {data: Object}
+    this.params = params;    
     this.fooId = this.params.data;
   }
 }

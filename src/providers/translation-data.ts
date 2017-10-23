@@ -14,7 +14,7 @@ import { Observable } from "../../node_modules/rxjs/Observable";
 export class TranslationData {
 
   constructor(public http: Http) {
-    console.log('Hello TranslationData Provider');
+    
   }
 
   getTranslation(text, from, to):Observable<any> {
